@@ -5,12 +5,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/golang/glog"
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
 	"io"
 	"net/url"
 	"path"
+
+	"github.com/golang/glog"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
 const (
@@ -54,8 +55,16 @@ func NewClient(cfg *Config) (*s3Client, error) {
 	if u.Port() != "" {
 		endpoint = u.Hostname() + ":" + u.Port()
 	}
+
+	var iamCreds *credentials.Credentials
+	// if client.Config.AccessKeyID == "" && client.Config.SecretAccessKey == "" {
+	iamCreds = credentials.NewIAM("")
+	// } else {
+	// 	iamCreds = credentials.NewStaticV4(client.Config.AccessKeyID, client.Config.SecretAccessKey, client.Config.Region)
+	// }
+
 	minioClient, err := minio.New(endpoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(client.Config.AccessKeyID, client.Config.SecretAccessKey, client.Config.Region),
+		Creds:  iamCreds,
 		Secure: ssl,
 	})
 	if err != nil {
@@ -78,6 +87,7 @@ func NewClientFromSecret(secret map[string]string) (*s3Client, error) {
 }
 
 func (client *s3Client) BucketExists(bucketName string) (bool, error) {
+	glog.Infof("BucketExists(%s)", bucketName)
 	return client.minio.BucketExists(client.ctx, bucketName)
 }
 

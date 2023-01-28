@@ -44,11 +44,15 @@ func (s3fs *s3fsMounter) Mount(source string, target string) error {
 	args := []string{
 		fmt.Sprintf("%s:/%s", s3fs.meta.BucketName, path.Join(s3fs.meta.Prefix, s3fs.meta.FSPath)),
 		target,
+		// "-o", "dbglevel=info", "-d", "-d",
 		"-o", "use_path_request_style",
 		"-o", fmt.Sprintf("url=%s", s3fs.url),
 		"-o", fmt.Sprintf("endpoint=%s", s3fs.region),
 		"-o", "allow_other",
 		"-o", "mp_umask=000",
+		"-o", "umask=000",
+		"-o", "credlib=/libs3fsawscred.so",
+		// "-o", "credlib_opts=Trace",
 	}
 	return fuseMount(target, s3fsCmd, args)
 }
