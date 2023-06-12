@@ -1,5 +1,4 @@
-FROM ghcr.io/artificialinc/s3fs-fuse-awscred-lib:0.0.3 as awscred
-FROM ghcr.io/artificialinc/docker-build-s3fs:0.0.3 as s3fsbuild
+FROM ghcr.io/challentai/docker-build-s3fs:0.0.3 as s3fsbuild
 FROM golang:1.16-alpine as gobuild
 
 WORKDIR /build
@@ -57,11 +56,11 @@ RUN dpkg -i s3fs_1.91+git-c17c815-3_amd64.deb
 COPY --from=gobuild /build/s3driver /s3driver
 
 # KINDA hacky, should probably be built here
-COPY --from=awscred /libs3fsawscred.so /libs3fsawscred.so
-COPY --from=awscred /libaws-cpp-sdk-identity-management.so /usr/local/lib/libaws-cpp-sdk-identity-management.so
-COPY --from=awscred /libaws-cpp-sdk-core.so /usr/local/lib/libaws-cpp-sdk-core.so
-COPY --from=awscred /libaws-cpp-sdk-sts.so /usr/local/lib/libaws-cpp-sdk-sts.so
-COPY --from=awscred /libaws-cpp-sdk-cognito-identity.so /usr/local/lib/libaws-cpp-sdk-cognito-identity.so
+ADD libs3fsawscred.so /libs3fsawscred.so
+ADD libaws-cpp-sdk-identity-management.so /usr/local/lib/libaws-cpp-sdk-identity-management.so
+ADD libaws-cpp-sdk-core.so /usr/local/lib/libaws-cpp-sdk-core.so
+ADD libaws-cpp-sdk-sts.so /usr/local/lib/libaws-cpp-sdk-sts.so
+ADD libaws-cpp-sdk-cognito-identity.so /usr/local/lib/libaws-cpp-sdk-cognito-identity.so
 
 RUN ldd /libs3fsawscred.so
 

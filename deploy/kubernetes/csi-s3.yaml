@@ -81,7 +81,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: ctrox/csi-s3:v1.2.0-rc.2
+          image: 843060328421.dkr.ecr.eu-west-1.amazonaws.com/csi-s3:0.0.1
           imagePullPolicy: "Always"
           args:
             - "--endpoint=$(CSI_ENDPOINT)"
